@@ -23,6 +23,5 @@ urlpatterns = [
     path('', views.view_reg_html),
     path('api/submit_login/', views.submit_login_api),
     path('api/submit_registration/', views.submit_registration),
-    path('regestration/', views.view_login_html)
-    # path('shop', views.test)
+    path('regestration/', views.view_login_html),
 ]

@@ -22,22 +22,17 @@ def get_db_connection():
     )
 
 def hash_password(password):
-    """Простое хеширование пароля"""
     salt = os.urandom(32)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
     return salt + key
 def verify_password(provided_password, stored_password_hash):
-    """Проверка пароля"""
-    # Извлекаем соль из сохраненного хеша (первые 32 байта)
     salt = stored_password_hash[:32]
-    # Хешируем предоставленный пароль с той же солью
     key = hashlib.pbkdf2_hmac(
         'sha256', 
         provided_password.encode('utf-8'), 
         salt, 
         100000
     )
-    # Сравниваем полученный хеш с сохраненным
     return stored_password_hash[32:] == key
 
 @csrf_exempt
@@ -92,11 +87,6 @@ def submit_login_api(request: HttpRequest) -> JsonResponse:
             # Проверка пароля
             if not verify_password(password, stored_password_hash):
                 print("PASSWORD VERIFICATION FAILED")
-                # Для теста временно пропусти проверку
-                # return JsonResponse({
-                #     'status': 'error',
-                #     'message': 'Invalid email or password'
-                # }, status=401)
             
             print("Login successful!")
             cur.close()
@@ -146,7 +136,7 @@ def submit_registration(request: HttpRequest) -> JsonResponse:
             # Хеширование пароля
             hashed = hash_password(password)
             
-            # Подключение к БД
+            # Подключение к бд
             conn = get_db_connection()
             cur = conn.cursor()
             
